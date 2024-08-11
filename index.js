@@ -15,10 +15,7 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin : "http://localhost:4000",
-    credentials : true,
-}));
+app.use(cors());
 
 app.use(
     fileUpload(
