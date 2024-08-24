@@ -48,7 +48,6 @@ exports.OtpGenerator = async (req, res) => {
         return  res.status(200).json({
             success : true,
             message : 'OTP sent successfully',
-            otp,
         });
         
 
@@ -71,7 +70,7 @@ exports.signup = async (req, res) => {
         password,
         confirmPassword,
         accountType,
-        otp,
+        // otp,
       } = req.body;
   
   
@@ -83,7 +82,7 @@ exports.signup = async (req, res) => {
       
 
       // validation
-      if(!firstName || !lastName || !email || !password || !confirmPassword || !otp || !accountType){
+      if(!firstName || !lastName || !email || !password || !confirmPassword  || !accountType){
         return res.status(403).json({
             success : false,
             message : 'All fields are required',
@@ -107,33 +106,8 @@ exports.signup = async (req, res) => {
         });
       }
 
-      // Find Most Recent Otp
-      const recentOtp = await OTP.findOne({ email })
-      .sort({ createdAt: -1 })
-      .limit(1);
-      // const recentOtp = await OTP.findOne({ email })
       
-  
-  
-      console.log(recentOtp)
-      if (!recentOtp || recentOtp.length == 0) {
-        return res.status(401).json({
-          success: false,
-          message: "Otp Expire",
-        });
-      }
-  
-  
-      console.log("4")
-      // Match Otp
-      
-      if (otp !== recentOtp.otp) {
-        return res.status(401).json({
-          success: false,
-          message: "Otp Not Match",
-        });
-      }
-  
+   
   
        console.log("5")
       const hashPassword = await bcrypt.hash(password, 10);
@@ -252,6 +226,50 @@ exports.signup = async (req, res) => {
     }
   };
   
+
+  exports.verifyOTP = async (req, res) => {
+    try {
+      // Fetch the Data
+      const {email,  otp} = req.body;
+       // Find Most Recent Otp
+      const recentOtp = await OTP.findOne({ email })
+      .sort({ createdAt: -1 })
+      .limit(1);
+      // const recentOtp = await OTP.findOne({ email })
+      
+  
+  
+      console.log(recentOtp)
+      if (!recentOtp || recentOtp.length == 0) {
+        return res.status(401).json({
+          success: false,
+          message: "Otp Expire",
+        });
+      }
+  
+  
+      console.log("4")
+      // Match Otp
+      
+      if (otp !== recentOtp.otp) {
+        return res.status(401).json({
+          success: false,
+          message: "Otp Not Match",
+        });
+      }
+     return res.status(200).json({
+      success : true,
+      message:"OTP matched"
+     })
+   
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: "OTP verification failed",
+      });
+    }
+  }
+
 
   exports.changePassword = async (req, res) => {
     try {

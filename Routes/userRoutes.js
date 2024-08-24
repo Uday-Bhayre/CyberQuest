@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { login, signup, OtpGenerator, changePassword } = require('../Controller/Auth');
+const { login, signup, OtpGenerator, changePassword, verifyOTP } = require('../Controller/Auth');
 
 const { resetPasswordToken, resetPassword} = require("../Controller/ResetPassword");
 
@@ -18,6 +18,8 @@ router.post('/signup', signup);
 
 // route for sending otp to the user's email
 router.post('/sendotp',OtpGenerator);
+
+router.post('/verifyotp',verifyOTP);
 
 //reset pass route
 router.post('/changepassword', auth, changePassword);
