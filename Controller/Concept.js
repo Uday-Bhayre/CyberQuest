@@ -46,6 +46,7 @@ exports.getAllConcepts = async (req, res) => {
     try{
         const allConcepts = await Concept.find({}, {
             conceptName : true,
+            description : true,
         }).exec();
 
         return res.status(200).json({
@@ -178,7 +179,7 @@ exports.getConceptDetails = async (req, res) => {
     }
 }
 
-exports.getConceptDetailsWithProgress = async (req, res) => {
+exports.getConceptDetailsWithProgress = async (req, res) => { 
     try{
         const {conceptId} = req.body;
         const userId = req.user.id;
