@@ -203,7 +203,7 @@ exports.signup = async (req, res) => {
       });
   
       user.token = token;
-      await User.findOneAndUpdate({token:token});
+
       user.password = undefined;
       console.log("Login 7")
   
@@ -228,35 +228,35 @@ exports.signup = async (req, res) => {
   };
   
   
-  exports.logOut = async (req, res) => {
-    try{
+  // exports.logOut = async (req, res) => {
+  //   try{
        
-        await User.findByIdAndUpdate(
-            req.user._id,
-            {
-                $set: {
-                    refreshToken: undefined
-                }
-            },
-            {
-                new: true
-            }
-        )
+  //       await User.findByIdAndUpdate(
+  //           req.user._id,
+  //           {
+  //               $set: {
+  //                   token: undefined
+  //               }
+  //           },
+  //           {
+  //               new: true
+  //           }
+  //       )
     
-        const options = {
-            httpOnly: true,
-            secure: true
-        }
+  //       const options = {
+  //           httpOnly: true,
+  //           secure: true
+  //       }
     
-        res
-        .status(200)
-        .clearCookie("token", options)
-        .json({success : true, message:"User successfully logged out"})
-    }
-    catch(err){
-      res.status(401).json({success:false, message:"Invalid User"});
-    }
-  }
+  //       res
+  //       .status(200)
+  //       .clearCookie("token", options)
+  //       .json({success : true, message:"User successfully logged out"})
+  //   }
+  //   catch(err){
+  //     res.status(401).json({success:false, message:"Invalid User"});
+  //   }
+  // }
 
   exports.verifyOTP = async (req, res) => {
     try {
