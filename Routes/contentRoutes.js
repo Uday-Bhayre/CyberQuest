@@ -21,7 +21,7 @@ router.delete("/deleteQuestion", auth, isAdmin, deleteQuestion)                 
 
 
 router.post("/getConceptDetails", auth, getConceptDetails)
-router.get("/getAllConcepts", auth, getAllConcepts)
+router.get("/getAllConcepts", getAllConcepts)
 router.post("/getConceptDetailsWithProgress", auth, isStudent, getConceptDetailsWithProgress)
 router.post("/updateProgress", auth, isStudent, updateProgress);
 
