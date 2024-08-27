@@ -92,22 +92,34 @@ exports.deleteAccount = async (req, res) => {
 
 exports.getAllUserDetails = async (req, res) => {
   try {
-    const id = req.user.id
-    const userDetails = await User.findById(id).populate("additionalDetails").exec()
-       
+    const id = req.user.id;
+
+    // Find the user and populate the necessary fields
+    const userDetails = await User.findById(id)
+      .populate("additionalDetails")
+      .populate({
+        path: "progress",
+        populate: {
+          path: "questionSolved",
+          select: "title url difficulty", // Select only the title of the questions
+      
+        },
+      })
+      .exec();
+
     res.status(200).json({
       success: true,
       message: "User Data fetched successfully",
       data: userDetails,
-    })
-  } 
-  catch (error) {
+    });
+  } catch (error) {
     return res.status(500).json({
       success: false,
       message: error.message,
-    })
+    });
   }
-}
+};
+
 
 
 exports.updateDisplayPicture = async (req, res) => {
