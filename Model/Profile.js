@@ -15,6 +15,14 @@ const  profileSchema = new mongoose.Schema({
     contactNumber : {
         type : Number,
         trim : true,
+    },
+    linkedInUrl:{
+        type : String,
+        trim : true
+    },
+    githubUrl : {
+        type : String,
+        trim : true
     }
     
 });

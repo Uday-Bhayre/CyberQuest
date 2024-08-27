@@ -8,42 +8,57 @@ const { uploadImageToCloudinary } = require("../Utils/imageUploader");
 // update profile details
 exports.updateProfile = async (req, res) => {
   try {
-    const {firstName = "",  lastName = "", dateOfBirth = "",  about = "",  contactNumber = "",  gender = "", } = req.body
-    const id = req.user.id
+    const { firstName = "", lastName = "", dateOfBirth = "", about = "", contactNumber = "", gender = "", image = "", linkedInUrl = "", githubUrl = "" } = req.body;
+    const id = req.user.id;
 
-    // Find the profile by id
-    const userDetails = await User.findById(id)
-    const profile = await Profile.findById(userDetails.additionalDetails)
+    // Find the user and profile by id
+    const userDetails = await User.findById(id);
+    const profile = await Profile.findById(userDetails.additionalDetails);
 
-    const user = await User.findByIdAndUpdate(id, { firstName,  lastName, })
-      
-    await user.save()
+    // Create an object to hold updates
+    const userUpdates = {};
+    const profileUpdates = {};
 
-    // Update the profile fields
-    profile.dateOfBirth = dateOfBirth
-    profile.about = about
-    profile.contactNumber = contactNumber
-    profile.gender = gender
+    // Only add fields that are not empty
+    if (firstName) userUpdates.firstName = firstName;
+    if (lastName) userUpdates.lastName = lastName;
+    if (image) userUpdates.image = image;
 
-    await profile.save()                                     // Save the updated profile
+    if (dateOfBirth) profileUpdates.dateOfBirth = dateOfBirth;
+    if (about) profileUpdates.about = about;
+    if (contactNumber) profileUpdates.contactNumber = contactNumber;
+    if (gender) profileUpdates.gender = gender;
+    if (linkedInUrl) profileUpdates.linkedInUrl = linkedInUrl;
+    if (githubUrl) profileUpdates.githubUrl = githubUrl;
+
+    // Update the user if there are any changes
+    if (Object.keys(userUpdates).length > 0) {
+      await User.findByIdAndUpdate(id, userUpdates);
+    }
+
+    // Update the profile if there are any changes
+    if (Object.keys(profileUpdates).length > 0) {
+      await Profile.findByIdAndUpdate(userDetails.additionalDetails, profileUpdates);
+    }
 
     // Find the updated user details
-    const updatedUserDetails = await User.findById(id).populate("additionalDetails").exec()
-      
+    const updatedUserDetails = await User.findById(id).populate("additionalDetails").exec();
+
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
       updatedUserDetails,
-    })
+    });
   } 
   catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       success: false,
       error: error.message,
-    })
+    });
   }
-}
+};
+
 
 
 exports.deleteAccount = async (req, res) => {
