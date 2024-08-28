@@ -179,24 +179,74 @@ exports.getConceptDetails = async (req, res) => {
     }
 }
 
+// exports.getConceptDetailsWithProgress = async (req, res) => { 
+//     try {
+//         const { conceptId } = req.body;
+//         const userId = req.user.id;
+
+//         // Fetch concept details and populate the question list
+//         const conceptDetails = await Concept.findOne({ _id: conceptId })
+//             .populate({
+//                 path: "questionList",
+//                 select: "title description url answer difficulty", // Select the required fields from the question schema
+//             })
+//             .exec();
+
+//         // Fetch progress details and populate the solved questions
+//         let progressDetails = await Progress.findOne({ conceptId: conceptId, userId: userId })
+//             .populate({
+//                 path: "questionSolved",
+//                 select: "title description url difficulty", // Select relevant fields from the question schema
+//             })
+//             .exec();
+
+//         if (!conceptDetails) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: `Could not find the concept with ID ${conceptId}`,
+//             });
+//         }
+        
+//         return res.status(200).json({
+//             success: true,
+//             message: 'Concept details fetched successfully',
+//             data: {
+//                 conceptDetails,
+//                 progressDetails,
+//             },
+//         });
+
+//     } catch (error) {
+//         console.error(error);  
+//         return res.status(500).json({
+//             success: false,
+//             message: 'Failed to get concept details',
+//             error: error.message,
+//         });
+//     }
+// };
+
+
 exports.getConceptDetailsWithProgress = async (req, res) => { 
     try {
-        const { conceptId } = req.body;
-        const userId = req.user.id;
+        const conceptId = mongoose.Types.ObjectId(req.body.conceptId);
+        const userId = mongoose.Types.ObjectId(req.user.id);
 
-        // Fetch concept details and populate the question list
-        const conceptDetails = await Concept.findOne({ _id: conceptId })
-            .populate({
-                path: "questionList",
-                select: "title description url answer difficulty", // Select the required fields from the question schema
-            })
-            .exec();
+        // Test fetching without populate
+        let progressDetails = await Progress.findOne({ conceptId, userId });
 
-        // Fetch progress details and populate the solved questions
-        let progressDetails = await Progress.findOne({ conceptId: conceptId, userId: userId })
+        // Check if progressDetails exists
+        if (!progressDetails) {
+            console.log("Progress details not found");
+        } else {
+            console.log("Progress details found:", progressDetails);
+        }
+
+        // Continue with populate if document exists
+        progressDetails = await Progress.findOne({ conceptId, userId })
             .populate({
                 path: "questionSolved",
-                select: "title description url difficulty", // Select relevant fields from the question schema
+                select: "title description url difficulty",
             })
             .exec();
 
@@ -206,7 +256,7 @@ exports.getConceptDetailsWithProgress = async (req, res) => {
                 message: `Could not find the concept with ID ${conceptId}`,
             });
         }
-        
+
         return res.status(200).json({
             success: true,
             message: 'Concept details fetched successfully',
