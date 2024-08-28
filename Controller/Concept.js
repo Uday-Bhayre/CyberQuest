@@ -180,48 +180,48 @@ exports.getConceptDetails = async (req, res) => {
 }
 
 exports.getConceptDetailsWithProgress = async (req, res) => { 
-    try{
-        const {conceptId} = req.body;
+    try {
+        const { conceptId } = req.body;
         const userId = req.user.id;
 
-        const conceptDetails = await Concept.findOne(
-                                    {_id : conceptId})
-                                    .populate(
-                                        {
-                                          path: "questionList", 
-                                        }
-                                    ).exec();
+        // Fetch concept details and populate the question list
+        const conceptDetails = await Concept.findOne({ _id: conceptId })
+            .populate({
+                path: "questionList",
+                select: "title description url answer difficulty", // Select the required fields from the question schema
+            })
+            .exec();
 
-        let progressDetails = await Progress.findOne({conceptId: conceptId, userId: userId})
-                                            .populate(
-                                                {
-                                                    path: "questionSolved",
-                                                 }
-                                            );
+        // Fetch progress details and populate the solved questions
+        let progressDetails = await Progress.findOne({ conceptId: conceptId, userId: userId })
+            .populate({
+                path: "questionSolved",
+                select: "title description url difficulty", // Select relevant fields from the question schema
+            })
+            .exec();
 
-
-        if(!conceptDetails){
+        if (!conceptDetails) {
             return res.status(400).json({
-                success : false,
-                message : `could not find the concept with ${conceptId}`,
+                success: false,
+                message: `Could not find the concept with ID ${conceptId}`,
             });
         }
         
         return res.status(200).json({
-            success : true,
-            message : 'Concept details fetched successfully',
-            data : {
+            success: true,
+            message: 'Concept details fetched successfully',
+            data: {
                 conceptDetails,
                 progressDetails,
             },
         });
 
-    }catch(error){
+    } catch (error) {
         console.error(error);  
         return res.status(500).json({
-            success : false,
-            message : 'Failed to get concept details',
-            error : error.message,
+            success: false,
+            message: 'Failed to get concept details',
+            error: error.message,
         });
     }
-}
+};
