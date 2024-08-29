@@ -121,7 +121,7 @@ exports.deleteQuestion = async (req, res) => {
         const allQuestions = await Concept.find({})
     .populate({
         path: 'questionList',
-        select: 'title description difficulty -_id', 
+        select: 'title description url answer difficulty -_id', 
     })
     .select('conceptName questionList -_id') 
     .exec();
