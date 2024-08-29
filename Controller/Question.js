@@ -115,3 +115,25 @@ exports.deleteQuestion = async (req, res) => {
       })
     }
   }
+
+  exports.getAllQuestions = async (req, res) => {
+    try{
+        const allQuestions = await Question.find({}, {
+            title : true,
+            description : true,
+        }).exec();
+
+        return res.status(200).json({
+            success : true,
+            message : 'Questionlist fetched successfully',
+            data : allQuestions,
+        });
+    }catch(error){
+        console.error(error);  
+        return res.status(500).json({
+            success : false,
+            message : 'Failed to fetch questionList',
+            error : error.message,
+        });
+    }
+}

@@ -155,7 +155,7 @@ exports.getConceptDetails = async (req, res) => {
                                         {
                                           path: "questionList", 
                                         }
-                                    ).exce();
+                                    ).exce(); 
         if(!conceptDetails){
             return res.status(400).json({
                 success : false,

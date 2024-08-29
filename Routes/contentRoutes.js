@@ -3,7 +3,7 @@ const router = express.Router()
 
  
 const {createConcept, deleteConcept, getConceptDetails, getConceptDetailsWithProgress, getAllConcepts, updateConcept} = require("../Controller/Concept");               // Course Controllers Import
-const {createQuestion, updateQuestion, deleteQuestion} = require('../Controller/Question');
+const {createQuestion, updateQuestion, deleteQuestion, getAllQuestions} = require('../Controller/Question');
 const { auth, isAdmin, isStudent} = require("../MiddleWare/auth")                          // Importing Middlewares
 const {updateProgress } = require("../Controller/Progress");
 
@@ -22,7 +22,8 @@ router.delete("/deleteQuestion", auth, isAdmin, deleteQuestion)                 
 
 router.post("/getConceptDetails", auth, getConceptDetails)
 router.get("/getAllConcepts", auth, getAllConcepts)
-router.post("/getConceptDetailsWithProgress", auth, isStudent, getConceptDetailsWithProgress)
+router.get("/getAllQuestions", auth, getAllQuestions)
+router.post("/getConceptDetailsWithProgress", auth, getConceptDetailsWithProgress)
 router.post("/updateProgress", auth, isStudent, updateProgress);
 
 

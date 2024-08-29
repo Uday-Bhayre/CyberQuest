@@ -14,7 +14,7 @@ const { auth } = require('../MiddleWare/auth');
 router.post('/login', login);
 
 // signup route
-router.post('/signup', signup);
+router.post('/signup', signup)
 
 // route for sending otp to the user's email
 router.post('/sendotp',OtpGenerator);

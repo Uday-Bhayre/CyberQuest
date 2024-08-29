@@ -64,7 +64,7 @@ exports.isStudent = async (req, res, next) => {
     }
 }
 
-// isAdmin
+// isAdmin 
 exports.isAdmin = async (req, res, next) => {
     try{
         if(req.user.accountType !== 'Admin') {
