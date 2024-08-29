@@ -116,12 +116,15 @@ exports.deleteQuestion = async (req, res) => {
     }
   }
 
-  exports.getAllQuestions = async (req, res) => {
+  exports.getAllQuestionsWithConcepts = async (req, res) => {
     try{
-        const allQuestions = await Question.find({}, {
-            title : true,
-            description : true,
-        }).exec();
+        const allQuestions = await Concept.find({})
+    .populate({
+        path: 'questionList',
+        select: 'title description difficulty -_id', 
+    })
+    .select('conceptName questionList -_id') 
+    .exec();
 
         return res.status(200).json({
             success : true,
