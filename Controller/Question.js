@@ -123,7 +123,7 @@ exports.deleteQuestion = async (req, res) => {
         path: 'questionList',
         select: 'title description url answer difficulty _id', 
     })
-    .select('conceptName questionList -_id') 
+    .select('conceptName questionList _id') 
     .exec();
 
         return res.status(200).json({
